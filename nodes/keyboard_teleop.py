@@ -22,7 +22,7 @@ import time
 import tty, termios, sys
 from geometry_msgs.msg import Twist
 rospy.init_node('keyboard_teleop')
-roslib.load_manifest('pioneer_teleop')
+#roslib.load_manifest('pioneer_teleop') #it has a problem loading this
 
 # define constants :
 KEY_UP = 65
@@ -42,7 +42,9 @@ keyPress = 0
 linearDirection = 0
 rotationalDirection = 0
 linearSpeed = 0
-rotationalSpeed = 0
+#rotationalSpeed = 0
+oldRotationalDir = 1
+oldSpeedDir = 1
 
 # init :
 pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
@@ -87,8 +89,17 @@ while(keyPress != KEY_Q) and (keyPress != KEY_Q2):
 		rotationalDirection = 0.0
 		print "  >> Stop robot\n"
 
+
 	newLinearSpeed = linearSpeed + linearDirection * 0.1
 	newRotationalSpeed = rotationalSpeed + rotationalDirection * 0.1
+	
+	if linearDirection != oldSpeedDir 
+        newLinearSpeed = 0.1 * linearDirection
+    if rotationalDirection != oldRotationalDir
+        newRotationalSpeed 0.1 * rotationalDirection
+    
+    oldSpeedDir = linearDirection
+    oldRotationalDir = rotationalDirection
 
 	if (newLinearSpeed > MAX_SPEED) or (newLinearSpeed < MAX_SPEED*(-1)):
 		print "     Warning ! Maximum linar speed already reached\n"
